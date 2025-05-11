@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Friends List</title>
+    <style>
+      .admin {
+        background-color: #f0f0f0;
+        font-weight: bold;
+        color: #ff6347;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="Friends.PNG" width="250">
+      <h1 style="text-align: center;">Friendship Zone</h1>
+    </header>
+
+    <section>
+      <h2>Details of people...</h2>
+      <table border="1" cellpadding="10">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>About</th>
+            <th>Age</th>
+            <th>Birthdate</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Interest</th>
+            <th>Attachment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="friendsTableBody">
+          <!-- Rows will be added here -->
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <button onclick="clearAll()">Clear All</button>
+    </section>
+
+    <br>
+    <section>
+      <a href="registrationform.html">Register to get added in the list</a>
+    </section>
+    <br>
+    <footer>
+      <a href="index.html">← Back to Home</a>
+    </footer>
+
+    <script>
+      var users = JSON.parse(localStorage.getItem("friendsList") || "[]");
+      var tablebody = document.getElementById("friendsTableBody");
+
+      function updateTable() {
+        tablebody.innerHTML = "";
+
+        users.forEach(function(user, index) {
+          var row = document.createElement("tr");
+
+          if (user.isAdmin) {
+            row.classList.add("admin");
+          }
+
+          row.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.about}</td>
+            <td>${user.age}</td>
+            <td>${user.birthdate}</td>
+            <td>${user.gender}</td>
+            <td>${user.email}</td>
+            <td>${user.phone}</td>
+            <td>${user.interest}</td>
+            <td>${user.attachment || 'No file uploaded'}</td>
+            <td>
+              <button onclick="sendRequest('${user.name}')">Send Request</button>
+              <button onclick="removeUser(${index})">Remove</button>
+            </td>
+          `;
+
+          tablebody.appendChild(row);
+        });
+      }
+
+      function sendRequest(name) {
+        alert("Friend request sent to " + name + "!");
+      }
+
+      function removeUser(index) {
+        users.splice(index, 1);
+        localStorage.setItem("friendsList", JSON.stringify(users));
+        updateTable();
+      }
+
+      function clearAll() {
+        if (confirm("Are you sure you want to remove all friends?")) {
+          localStorage.removeItem("friendsList");
+          users = [];
+          updateTable();
+        }
+      }
+
+      // Initial table load
+      updateTable();
+    </script>
+  </body>
+</html>

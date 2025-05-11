@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration Form</title>
+    <script>
+        function validateForm(event, isAdmin = false){
+            event.preventDefault();
+
+            var name = document.getElementById("name").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var age = document.getElementById("age").value.trim();
+            var birthdate = document.getElementById("birthdate").value;
+            var gender = document.querySelector('input[name="gender"]:checked')?.value || "";
+            var about = document.getElementById("about").value.trim();
+            var phone = document.getElementById("phone").value.trim();
+            var interest = document.querySelector('input[name="interest"]:checked')?.value || "";
+            var fileInput = document.getElementById("file");
+            var fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+
+            var nameRegex = /^[A-Za-z\s]{3,}$/;
+            if (!nameRegex.test(name)) {
+                alert("Name must be at least 3 characters and contain no numbers.");
+                return;
+            }
+
+            var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            if (!/^\d+$/.test(age) || parseInt(age) < 18) {
+                alert("Age must be a number and at least 18.");
+                return;
+            }
+
+            // Creating the user object
+            var user = {
+                name: name,
+                email: email,
+                age: age,
+                birthdate: birthdate,
+                gender: gender,
+                about: about,
+                phone: phone,
+                interest: interest,
+                attachment: fileName,
+                isAdmin: isAdmin  // Adding isAdmin flag
+            };
+            
+            // Storing the user data in localStorage
+            var users = JSON.parse(localStorage.getItem("friendsList") || "[]");
+            users.push(user);
+            localStorage.setItem("friendsList", JSON.stringify(users));
+
+            window.location.href = "registrationconfirm.html";
+        }
+
+        // Function to handle Admin registration
+        function gotoAdminPage(event){
+            validateForm(event, true);  // Passing true to set isAdmin as true
+        }
+    </script>
+  </head>
+  <body>
+    <header>
+        <img src="Friends.PNG" width="250">
+        <h1 style="text-align: center;">Friendship Zone</h1>
+    </header>
+
+    <section>
+        <h2>Add your details to register</h2>
+    </section>
+
+    <section>
+        <form id="regForm">
+            <label for="name"><strong>Name:</strong></label>
+            <input type="text" id="name" required><br><br>
+
+            <label for="email"><strong>Email:</strong></label>
+            <input type="email" id="email" required><br><br>
+
+            <label for="age"><strong>Age:</strong></label>
+            <input type="number" id="age" required><br><br>
+
+            <label for="birthdate"><strong>Birth Day:</strong></label>
+            <input type="date" id="birthdate" name="birthdate"><br><br>
+
+            <label><strong>Gender:</strong></label>
+            <input type="radio" name="gender" value="Male"> Male
+            <input type="radio" name="gender" value="Female"> Female
+            <input type="radio" name="gender" value="Other"> Other<br><br>
+
+            <label for="about"><strong>About:</strong></label>
+            <textarea id="about" name="about" rows="4" cols="40" placeholder="Write something about you."></textarea><br><br>
+
+            <label for="phone"><strong>Phone:</strong></label>
+            <input type="text" id="phone" name="phone"><br><br>    
+
+            <label><strong>Interested in:</strong></label>
+            <input type="radio" name="interest" value="friendship"> Friendship
+            <input type="radio" name="interest" value="dating"> Dating <br><br>
+
+            <label for="file"><strong>Attachment:</strong></label>
+            <input type="file" id="file" name="file"><br><br>
+
+            <input type="submit" value="Register">
+            <button type="button" onclick="gotoAdminPage(event)">Register as Admin</button>
+        </form>
+
+        <script>
+           document.getElementById("regForm").addEventListener("submit", function(event){
+               validateForm(event, false);  // Passing false for normal registration
+           });
+        </script>
+    </section>
+    
+    <footer>
+        <br><br>
+        <a href="friend-list.html">← Back to Friends list</a>
+        <br><br>
+        <a href="index.html">← Back to Home</a>
+    </footer>
+    
+  </body>
+</html>
